@@ -1,5 +1,5 @@
 {
-    "name": "brettlangdon/drudge",
+    "name": "drudge/drudge",
     "description": "A simple PHP web server",
     "version": "0.1.0",
     "license": "MIT",
@@ -29,7 +29,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Brettlangdon\\Drudge\\": "src/"
+            "Drudge\\": "src/"
         }
     }
 }
