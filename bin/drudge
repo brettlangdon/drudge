@@ -7,29 +7,70 @@ $doc = <<<DOC
 Drudge
 
 Usage:
-    drudge [--host <host>] [--port <port>] <script>
+    drudge [--host <host>] [--port <port>] [--workers <workers>] <script>
+    drudge --config <config> [<script>]
+    drudge --version
 
 Options:
     --help                     Show this help message
     --version                  Show version information
     -h --host <host>           Host to bind to [default: 0.0.0.0]
     -p --port <port>           Port to bin to [default: 80]
+    -c --config <config>       Location of Drudge config
+    -w --workers <workers>     Number of workers to use [default: 1]
 DOC;
 
-$handler = new Docopt\Handler(
+$doc_handler = new Docopt\Handler(
     array(
         'version' => 'Drudge 0.1.0',
         'help' => true,
     )
 );
-$args = $handler->handle($doc);
+$args = $doc_handler->handle($doc);
 
-$params = array(
-    'host' => $args['--host'] || '0.0.0.0',
-    'port' => intval($args['--port']) || 80,
-);
+$params = array();
+$handler = NULL;
+$workers = 1;
 
-$handler = require realpath($args['<script>']);
+if($args['--config'] !== NULL){
+    $config = parse_ini_file(realpath($args['--config']));
+    if(isset($config['port'])){
+        $params['port'] = intval($config['port']);
+    }
 
-$server = new Brettlangdon\Drudge\Server($params, $handler);
+    if(isset($config['host'])){
+        $params['host'] = $config['host'];
+    }
+
+    if(isset($config['workers'])){
+        $workers = intval($config['workers']);
+    }
+
+    if(isset($config['entry'])){
+        $handler = $config['entry'];
+    }
+}
+
+if(!isset($params['host'])){
+    $params['host'] = $args['--host'];
+}
+
+if(!isset($params['port'])){
+    $params['port'] = intval($args['--port']);
+}
+
+if($workers === NULL){
+    $workers = intval($args['--workers']);
+}
+
+if($args['<script>'] !== NULL){
+    $handler = $args['<script>'];
+}
+
+if($handler !== NULL){
+    $handler = require realpath($handler);
+}
+
+// TODO: use a WorkerPool rather than a Server
+$server = new \Drudge\Server($params, $handler);
 $server->run();
