@@ -1,0 +1,35 @@
+{
+    "name": "brettlangdon/drudge",
+    "description": "A simple PHP web server",
+    "version": "0.1.0",
+    "license": "MIT",
+    "homepage": "https://github.com/brettlangdon/drudge",
+    "keywords": [
+        "web",
+        "http",
+        "server"
+    ],
+    "authors": [
+        {
+            "name": "brettlangdon",
+            "email": "brett@blangdon.com",
+            "homepage": "http://brett.is/"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/brettlangdon/drudge/issues",
+        "source": "https://github.com/brettlangdon/drudge"
+    },
+    "require": {
+        "ext-uv": "*",
+        "docopt/docopt": ">=0.6.0"
+    },
+    "bin": [
+        "bin/drudge"
+    ],
+    "autoload": {
+        "psr-0": {
+            "Brettlangdon\\Drudge\\": "src/"
+        }
+    }
+}

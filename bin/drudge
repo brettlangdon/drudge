@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+$root = dirname(__dir__);
+require implode(DIRECTORY_SEPARATOR, array($root, 'vendor', 'autoload.php'));
+
+$doc = <<<DOC
+Drudge
+
+Usage:
+    drudge [--host <host>] [--port <port>] <script>
+
+Options:
+    --help                     Show this help message
+    --version                  Show version information
+    -h --host <host>           Host to bind to [default: 0.0.0.0]
+    -p --port <port>           Port to bin to [default: 80]
+DOC;
+
+$handler = new Docopt\Handler(
+    array(
+        'version' => 'Drudge 0.1.0',
+        'help' => true,
+    )
+);
+$args = $handler->handle($doc);
+
+$params = array(
+    'host' => $args['--host'] || '0.0.0.0',
+    'port' => intval($args['--port']) || 80,
+);
+
+$handler = require realpath($args['<script>']);
+
+$server = new Brettlangdon\Drudge\Server($params, $handler);
+$server->run();
